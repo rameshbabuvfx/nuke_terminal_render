@@ -1,0 +1,4 @@
+1. add .nk file
+2. show all write nodes
+3. select write nodes
+4. start render.
