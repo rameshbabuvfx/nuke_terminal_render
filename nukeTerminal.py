@@ -79,10 +79,9 @@ class TerminalRender(nukeTerminal_UI.Ui_Form, QWidget):
                 self.selected_nuke_file,
                 write_split[1]
             )
-            render_thread = RenderThread(cmd=cmd)
-            render_thread.render_log.connect(self.display_render_progress)
-            print("kuksusg")
-            render_thread.start()
+            self.render_thread = RenderThread(cmd=cmd)
+            self.render_thread.render_log.connect(self.display_render_progress)
+            self.render_thread.start()
 
     def display_render_progress(self, val):
         self.terminal_plainTextEdit.append(val)
@@ -96,8 +95,6 @@ class RenderThread(QThread):
         self.cmd = cmd
 
     def run(self):
-        print("running")
-        print(self.cmd)
         render_process = subprocess.Popen(self.cmd, stdout=subprocess.PIPE)
         while True:
             render_log = render_process.stdout.readline().decode(encoding="utf-8")
