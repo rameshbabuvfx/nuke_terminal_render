@@ -17,8 +17,9 @@ class TerminalRender(nukeTerminal_UI.Ui_Form, QWidget):
         self.package_path = os.path.dirname(__file__)
         self.selected_nuke_file = None
 
-        with open(r"D:\PythonProjects\NukePython\nuke_terminal_render\cache\nukeExec.log", "r+") as exec:
-            self.nuke_exec_path = exec.readline()
+        with open(r"{}\nukeExec.txt".format(self.package_path), "r+") as nuke_path:
+            self.nuke_exec_path = nuke_path.readline()
+            nuke_path.close()
         self.nuke_exec_lineEdit.setText(self.nuke_exec_path)
 
         self.connect_ui()
@@ -27,14 +28,18 @@ class TerminalRender(nukeTerminal_UI.Ui_Form, QWidget):
         self.browse_pushButton.clicked.connect(self.browse_nuke_exec)
         self.nuke_file_listWidget.itemClicked.connect(self.get_write_node_data)
         self.render_pushButton.clicked.connect(self.render_write_nodes)
+        self.nuke_exec_lineEdit.textChanged.connect(self.set_nuke_exec_path)
+        self.clear_pushButton.clicked.connect(self.clear_render_log)
 
     def browse_nuke_exec(self):
-        self.nuke_exec_path = QFileDialog.getExistingDirectory(self)
-        self.nuke_exec_lineEdit.setText(self.nuke_exec_path)
+        self.nuke_exec_path, _ = QFileDialog.getOpenFileUrl(self)
+        self.nuke_exec_lineEdit.setText(self.nuke_exec_path.toLocalFile())
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
             event.accept()
+        else:
+            super().dragEnterEvent(event)
 
     def dropEvent(self, event):
         if event.mimeData().hasUrls():
@@ -43,6 +48,8 @@ class TerminalRender(nukeTerminal_UI.Ui_Form, QWidget):
                 nuke_file_path = path.toLocalFile()
                 if nuke_file_path.endswith(".nk"):
                     self.nuke_file_listWidget.addItem(nuke_file_path)
+        else:
+            super().dropEvent(event)
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Delete:
@@ -50,6 +57,9 @@ class TerminalRender(nukeTerminal_UI.Ui_Form, QWidget):
             for item in selected_items:
                 row = self.nuke_file_listWidget.row(item)
                 self.nuke_file_listWidget.takeItem(row)
+                self.write_node_listWidget.clear()
+        else:
+            super().keyPressEvent(event)
 
     def get_write_node_data(self):
         self.selected_nuke_file = self.nuke_file_listWidget.currentItem().text()
@@ -69,7 +79,7 @@ class TerminalRender(nukeTerminal_UI.Ui_Form, QWidget):
     def render_write_nodes(self):
         self.terminal_plainTextEdit.clear()
         selected_write_nodes = self.write_node_listWidget.selectedItems()
-        for node in selected_write_nodes:
+        for count, node in enumerate(selected_write_nodes):
             write_node_details = node.text()
             write_split = write_node_details.split(":")
             write_node_name = write_split[0]
@@ -79,12 +89,26 @@ class TerminalRender(nukeTerminal_UI.Ui_Form, QWidget):
                 self.selected_nuke_file,
                 write_split[1]
             )
-            self.render_thread = RenderThread(cmd=cmd)
-            self.render_thread.render_log.connect(self.display_render_progress)
-            self.render_thread.start()
+
+            exec("self.thread" + str(count) + "= RenderThread(cmd=cmd)")
+            exec("self.thread" + str(count) + ".render_log.connect(self.display_render_progress)")
+            exec("self.thread" + str(count) + ".start()")
+
+            # self.render_thread = RenderThread(cmd=cmd)
+            # self.render_thread.render_log.connect(self.display_render_progress)
+            # self.render_thread.start()
 
     def display_render_progress(self, val):
         self.terminal_plainTextEdit.append(val)
+
+    def clear_render_log(self):
+        self.terminal_plainTextEdit.clear()
+
+    def set_nuke_exec_path(self):
+        exec_path = self.nuke_exec_lineEdit.text()
+        with open(r"{}\nukeExec.txt".format(self.package_path), "w+") as nuke_path:
+            self.nuke_exec_path = nuke_path.write(exec_path)
+            nuke_path.close()
 
 
 class RenderThread(QThread):
@@ -93,6 +117,7 @@ class RenderThread(QThread):
     def __init__(self, cmd):
         super(RenderThread, self).__init__()
         self.cmd = cmd
+        self.thread_active = True
 
     def run(self):
         render_process = subprocess.Popen(self.cmd, stdout=subprocess.PIPE)

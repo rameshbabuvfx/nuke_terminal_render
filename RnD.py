@@ -11,6 +11,5 @@ while True:
     print('')
     break
 
-renderCMD = nukePath+" -t "+RCVFX_SCRIPT+"/dataAdmin/pythonScripts/imageConvertNukeRender_02.py " + jsonFilePath + " @#@ @#@ RenderFarm"
 
 
