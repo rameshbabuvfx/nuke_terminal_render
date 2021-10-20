@@ -16,6 +16,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(63, 63, 63);</string>
+  </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="2" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -24,20 +27,67 @@
      </property>
      <item>
       <widget class="QPushButton" name="render_pushButton">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>27</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>MS Reference Sans Serif</family>
+         <pointsize>8</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton{
+	background-color: rgb(114, 108, 163);
+	color: rgb(255, 255, 255);
+	border-radius:5px;
+}
+QPushButton:pressed{
+	background-color: rgb(85, 81, 122);
+}</string>
+       </property>
        <property name="text">
         <string>Render</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="stop_pushButton">
-       <property name="text">
-        <string>Stop</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="clear_pushButton">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>27</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>MS Reference Sans Serif</family>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton{
+	background-color: rgb(114, 108, 163);
+	color: rgb(255, 255, 255);
+	border-radius:5px;
+}
+QPushButton:pressed{
+	background-color: rgb(85, 81, 122);
+}</string>
+       </property>
        <property name="text">
         <string>Clear</string>
        </property>
@@ -55,30 +105,25 @@
          <height>16777215</height>
         </size>
        </property>
+       <property name="font">
+        <font>
+         <family>MS Reference Sans Serif</family>
+         <pointsize>7</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QListWidget{
+	selection-background-color: rgb(85, 170, 127);
+	background-color: rgb(35, 35, 35);
+	color: rgb(204, 204, 204);
+	border-radius:10px;
+}</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
        <property name="selectionMode">
         <enum>QAbstractItemView::MultiSelection</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QListWidget" name="nuke_file_listWidget">
-       <property name="maximumSize">
-        <size>
-         <width>350</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="acceptDrops">
-        <bool>true</bool>
-       </property>
-       <property name="dragDropMode">
-        <enum>QAbstractItemView::DropOnly</enum>
-       </property>
-       <property name="selectionMode">
-        <enum>QAbstractItemView::ExtendedSelection</enum>
-       </property>
-       <property name="selectionBehavior">
-        <enum>QAbstractItemView::SelectItems</enum>
        </property>
       </widget>
      </item>
@@ -93,11 +138,54 @@
         <bool>false</bool>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(163, 163, 163);
-color: rgb(7, 7, 7);</string>
+        <string notr="true">background-color: rgb(35, 35, 35);
+color: rgb(204, 204, 204);
+border-radius:10px;</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
        </property>
        <property name="readOnly">
-        <bool>false</bool>
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QListWidget" name="nuke_file_listWidget">
+       <property name="maximumSize">
+        <size>
+         <width>350</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>MS Reference Sans Serif</family>
+         <pointsize>7</pointsize>
+        </font>
+       </property>
+       <property name="acceptDrops">
+        <bool>true</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QListWidget{
+	selection-background-color: rgb(85, 170, 127);
+	background-color: rgb(35, 35, 35);
+	color: rgb(204, 204, 204);
+	border-radius:10px;
+}</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="dragDropMode">
+        <enum>QAbstractItemView::DropOnly</enum>
+       </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::ContiguousSelection</enum>
+       </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectItems</enum>
        </property>
       </widget>
      </item>
@@ -109,10 +197,59 @@ color: rgb(7, 7, 7);</string>
       <number>0</number>
      </property>
      <item>
-      <widget class="QLineEdit" name="nuke_exec_lineEdit"/>
+      <widget class="QLineEdit" name="nuke_exec_lineEdit">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>MS Reference Sans Serif</family>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QLineEdit{
+	background-color: rgb(30, 30, 30);
+	color: rgb(204, 204, 204);
+	border-radius:5px;
+}</string>
+       </property>
+       <property name="cursorMoveStyle">
+        <enum>Qt::LogicalMoveStyle</enum>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="browse_pushButton">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>MS Reference Sans Serif</family>
+         <pointsize>7</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton{
+	background-color: rgb(114, 108, 163);
+	color: rgb(255, 255, 255);
+	border-radius:5px;
+}
+QPushButton:pressed{
+	background-color: rgb(85, 81, 122);
+}</string>
+       </property>
        <property name="text">
         <string>Browse</string>
        </property>

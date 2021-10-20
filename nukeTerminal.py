@@ -14,12 +14,13 @@ class TerminalRender(nukeTerminal_UI.Ui_Form, QWidget):
         super().__init__()
         self.setupUi(self)
         self.setAcceptDrops(True)
-        self.package_path = os.path.dirname(__file__)
+        self.package_path = os.path.dirname(sys.argv[0])
         self.selected_nuke_file = None
         self.thread_pool = QThreadPool()
         self.thread_pool.setMaxThreadCount(1)
+        self.setWindowTitle("Nuke Terminal Render")
 
-        with open(r"{}\nukeExec.txt".format(self.package_path), "r+") as nuke_path:
+        with open(r"{}\nukeExec.log".format(self.package_path), "r+") as nuke_path:
             self.nuke_exec_path = nuke_path.readline()
             nuke_path.close()
         self.nuke_exec_lineEdit.setText(self.nuke_exec_path)
@@ -66,6 +67,7 @@ class TerminalRender(nukeTerminal_UI.Ui_Form, QWidget):
     def get_write_node_data(self):
         self.selected_nuke_file = self.nuke_file_listWidget.currentItem().text()
         self.write_node_listWidget.clear()
+        self.setCursor(Qt.WaitCursor)
         write_cmd = r"{} -t {}\writeNodeData.py {}".format(
             self.nuke_exec_path,
             self.package_path,
@@ -77,6 +79,7 @@ class TerminalRender(nukeTerminal_UI.Ui_Form, QWidget):
         for count, write_node in enumerate(write_node_list):
             if count > 1:
                 self.write_node_listWidget.addItem(write_node)
+        self.setCursor(Qt.ArrowCursor)
 
     def render_write_nodes(self):
         self.terminal_plainTextEdit.clear()
@@ -104,7 +107,7 @@ class TerminalRender(nukeTerminal_UI.Ui_Form, QWidget):
 
     def set_nuke_exec_path(self):
         exec_path = self.nuke_exec_lineEdit.text()
-        with open(r"{}\nukeExec.txt".format(self.package_path), "w+") as nuke_path:
+        with open(r"{}\nukeExec.log".format(self.package_path), "w+") as nuke_path:
             self.nuke_exec_path = nuke_path.write(exec_path)
             nuke_path.close()
 
