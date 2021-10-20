@@ -16,6 +16,8 @@ class TerminalRender(nukeTerminal_UI.Ui_Form, QWidget):
         self.setAcceptDrops(True)
         self.package_path = os.path.dirname(__file__)
         self.selected_nuke_file = None
+        self.thread_pool = QThreadPool()
+        self.thread_pool.setMaxThreadCount(1)
 
         with open(r"{}\nukeExec.txt".format(self.package_path), "r+") as nuke_path:
             self.nuke_exec_path = nuke_path.readline()
@@ -90,13 +92,9 @@ class TerminalRender(nukeTerminal_UI.Ui_Form, QWidget):
                 write_split[1]
             )
 
-            exec("self.thread" + str(count) + "= RenderThread(cmd=cmd)")
-            exec("self.thread" + str(count) + ".render_log.connect(self.display_render_progress)")
-            exec("self.thread" + str(count) + ".start()")
-
-            # self.render_thread = RenderThread(cmd=cmd)
-            # self.render_thread.render_log.connect(self.display_render_progress)
-            # self.render_thread.start()
+            exec("self.worker" + str(count) + "= RenderThread(cmd=cmd)")
+            exec("self.worker" + str(count) + ".signal.render_log.connect(self.display_render_progress)")
+            exec("self.thread_pool" + ".start(self.worker{})".format(str(count)))
 
     def display_render_progress(self, val):
         self.terminal_plainTextEdit.append(val)
@@ -111,13 +109,15 @@ class TerminalRender(nukeTerminal_UI.Ui_Form, QWidget):
             nuke_path.close()
 
 
-class RenderThread(QThread):
+class WorkerSignals(QObject):
     render_log = Signal(str)
 
+
+class RenderThread(QRunnable):
     def __init__(self, cmd):
         super(RenderThread, self).__init__()
         self.cmd = cmd
-        self.thread_active = True
+        self.signal = WorkerSignals()
 
     def run(self):
         render_process = subprocess.Popen(self.cmd, stdout=subprocess.PIPE)
@@ -128,7 +128,7 @@ class RenderThread(QThread):
             else:
                 render_progress = "Render Completed"
                 break
-            self.render_log.emit(render_progress)
+            self.signal.render_log.emit(render_progress)
 
 
 if __name__ == '__main__':
