@@ -143,11 +143,11 @@ class RenderThread(QRunnable):
                 break
             self.signal.render_log.emit(render_progress)
 
-    def kill_subprocess(self):
+    @staticmethod
+    def kill_subprocess():
         with open(r"{}\pid.log".format(package_path), "r+") as pid_file:
             pid_number = pid_file.readline()
             pid_file.close()
-        print(pid_number)
         os.kill(int(pid_number), 9)
 
 
