@@ -13,6 +13,13 @@
     <height>479</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>MS Reference Sans Serif</family>
+    <weight>75</weight>
+    <bold>true</bold>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -57,6 +64,36 @@ QPushButton:pressed{
        </property>
        <property name="text">
         <string>Render</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="stop_pushButton">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>27</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>MS Reference Sans Serif</family>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton{
+	background-color: rgb(114, 108, 163);
+	color: rgb(255, 255, 255);
+	border-radius:5px;
+}
+QPushButton:pressed{
+	background-color: rgb(85, 81, 122);
+}</string>
+       </property>
+       <property name="text">
+        <string>Stop</string>
        </property>
       </widget>
      </item>

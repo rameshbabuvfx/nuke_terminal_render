@@ -19,6 +19,11 @@ class Ui_Form(object):
             Form.setObjectName(u"Form")
         Form.setWindowModality(Qt.NonModal)
         Form.resize(992, 479)
+        font = QFont()
+        font.setFamily(u"MS Reference Sans Serif")
+        font.setBold(True)
+        font.setWeight(75)
+        Form.setFont(font)
         Form.setStyleSheet(u"background-color: rgb(63, 63, 63);")
         self.gridLayout_2 = QGridLayout(Form)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
@@ -28,13 +33,13 @@ class Ui_Form(object):
         self.render_pushButton = QPushButton(Form)
         self.render_pushButton.setObjectName(u"render_pushButton")
         self.render_pushButton.setMinimumSize(QSize(0, 27))
-        font = QFont()
-        font.setFamily(u"MS Reference Sans Serif")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
-        font.setStrikeOut(False)
-        self.render_pushButton.setFont(font)
+        font1 = QFont()
+        font1.setFamily(u"MS Reference Sans Serif")
+        font1.setPointSize(8)
+        font1.setBold(True)
+        font1.setWeight(75)
+        font1.setStrikeOut(False)
+        self.render_pushButton.setFont(font1)
         self.render_pushButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.render_pushButton.setStyleSheet(u"QPushButton{\n"
 "	background-color: rgb(114, 108, 163);\n"
@@ -47,14 +52,25 @@ class Ui_Form(object):
 
         self.horizontalLayout.addWidget(self.render_pushButton)
 
+        self.stop_pushButton = QPushButton(Form)
+        self.stop_pushButton.setObjectName(u"stop_pushButton")
+        self.stop_pushButton.setMinimumSize(QSize(0, 27))
+        self.stop_pushButton.setFont(font)
+        self.stop_pushButton.setStyleSheet(u"QPushButton{\n"
+"	background-color: rgb(114, 108, 163);\n"
+"	color: rgb(255, 255, 255);\n"
+"	border-radius:5px;\n"
+"}\n"
+"QPushButton:pressed{\n"
+"	background-color: rgb(85, 81, 122);\n"
+"}")
+
+        self.horizontalLayout.addWidget(self.stop_pushButton)
+
         self.clear_pushButton = QPushButton(Form)
         self.clear_pushButton.setObjectName(u"clear_pushButton")
         self.clear_pushButton.setMinimumSize(QSize(0, 27))
-        font1 = QFont()
-        font1.setFamily(u"MS Reference Sans Serif")
-        font1.setBold(True)
-        font1.setWeight(75)
-        self.clear_pushButton.setFont(font1)
+        self.clear_pushButton.setFont(font)
         self.clear_pushButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.clear_pushButton.setStyleSheet(u"QPushButton{\n"
 "	background-color: rgb(114, 108, 163);\n"
@@ -174,6 +190,7 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         self.render_pushButton.setText(QCoreApplication.translate("Form", u"Render", None))
+        self.stop_pushButton.setText(QCoreApplication.translate("Form", u"Stop", None))
         self.clear_pushButton.setText(QCoreApplication.translate("Form", u"Clear", None))
         self.browse_pushButton.setText(QCoreApplication.translate("Form", u"Browse", None))
     # retranslateUi

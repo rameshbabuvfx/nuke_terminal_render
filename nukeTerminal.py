@@ -8,19 +8,20 @@ from PySide2.QtGui import *
 
 from UI import nukeTerminal_UI
 
+package_path = os.path.dirname(sys.argv[0])
+
 
 class TerminalRender(nukeTerminal_UI.Ui_Form, QWidget):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
         self.setAcceptDrops(True)
-        self.package_path = os.path.dirname(sys.argv[0])
         self.selected_nuke_file = None
         self.thread_pool = QThreadPool()
         self.thread_pool.setMaxThreadCount(1)
         self.setWindowTitle("Nuke Terminal Render")
 
-        with open(r"{}\nukeExec.log".format(self.package_path), "r+") as nuke_path:
+        with open(r"{}\nukeExec.log".format(package_path), "r+") as nuke_path:
             self.nuke_exec_path = nuke_path.readline()
             nuke_path.close()
         self.nuke_exec_lineEdit.setText(self.nuke_exec_path)
@@ -33,6 +34,11 @@ class TerminalRender(nukeTerminal_UI.Ui_Form, QWidget):
         self.render_pushButton.clicked.connect(self.render_write_nodes)
         self.nuke_exec_lineEdit.textChanged.connect(self.set_nuke_exec_path)
         self.clear_pushButton.clicked.connect(self.clear_render_log)
+        self.stop_pushButton.clicked.connect(self.stop_render_process)
+
+    def stop_render_process(self):
+        self.kill_worker = RenderThread()
+        self.kill_worker.kill_subprocess()
 
     def browse_nuke_exec(self):
         self.nuke_exec_path, _ = QFileDialog.getOpenFileUrl(self)
@@ -68,11 +74,12 @@ class TerminalRender(nukeTerminal_UI.Ui_Form, QWidget):
         self.selected_nuke_file = self.nuke_file_listWidget.currentItem().text()
         self.write_node_listWidget.clear()
         self.setCursor(Qt.WaitCursor)
-        write_cmd = r"{} -t {}\writeNodeData.py {}".format(
+        write_cmd = r'"{}" -t "{}\writeNodeData.py" "{}"'.format(
             self.nuke_exec_path,
-            self.package_path,
+            package_path,
             self.selected_nuke_file
         )
+        print(write_cmd)
         process = subprocess.Popen(write_cmd, stdout=subprocess.PIPE)
         write_node_data = process.communicate()[0].decode(encoding="utf-8")
         write_node_list = write_node_data.splitlines()
@@ -88,7 +95,7 @@ class TerminalRender(nukeTerminal_UI.Ui_Form, QWidget):
             write_node_details = node.text()
             write_split = write_node_details.split(":")
             write_node_name = write_split[0]
-            cmd = "{} -X {} {} {}".format(
+            cmd = '"{}" -X {} "{}" {}'.format(
                 self.nuke_exec_path,
                 write_node_name,
                 self.selected_nuke_file,
@@ -107,7 +114,7 @@ class TerminalRender(nukeTerminal_UI.Ui_Form, QWidget):
 
     def set_nuke_exec_path(self):
         exec_path = self.nuke_exec_lineEdit.text()
-        with open(r"{}\nukeExec.log".format(self.package_path), "w+") as nuke_path:
+        with open(r"{}\nukeExec.log".format(package_path), "w+") as nuke_path:
             self.nuke_exec_path = nuke_path.write(exec_path)
             nuke_path.close()
 
@@ -117,13 +124,16 @@ class WorkerSignals(QObject):
 
 
 class RenderThread(QRunnable):
-    def __init__(self, cmd):
+    def __init__(self, cmd=None):
         super(RenderThread, self).__init__()
         self.cmd = cmd
         self.signal = WorkerSignals()
 
     def run(self):
         render_process = subprocess.Popen(self.cmd, stdout=subprocess.PIPE)
+        with open(r"{}\pid.log".format(package_path), "w+") as pid_file:
+            pid_file.write(str(render_process.pid))
+            pid_file.close()
         while True:
             render_log = render_process.stdout.readline().decode(encoding="utf-8")
             if render_log:
@@ -132,6 +142,13 @@ class RenderThread(QRunnable):
                 render_progress = "Render Completed"
                 break
             self.signal.render_log.emit(render_progress)
+
+    def kill_subprocess(self):
+        with open(r"{}\pid.log".format(package_path), "r+") as pid_file:
+            pid_number = pid_file.readline()
+            pid_file.close()
+        print(pid_number)
+        os.kill(int(pid_number), 9)
 
 
 if __name__ == '__main__':
